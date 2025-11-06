@@ -1,0 +1,9 @@
+#!/usr/bin/env php
+<?php
+use Doctrine\ORM\Tools\Console\ConsoleRunner;
+use Doctrine\ORM\Tools\Console\EntityManagerProvider\SingleManagerProvider;
+
+require __DIR__ . '/../vendor/autoload.php';
+require __DIR__ . '/../bootstrap.php'; // on va le définir juste après
+
+ConsoleRunner::run(new SingleManagerProvider($entityManager));

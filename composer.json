@@ -1,0 +1,26 @@
+{
+  "name": "vendor_name/mvcjba",
+  "description": "description",
+  "minimum-stability": "stable",
+  "license": "proprietary",
+  "authors": [
+    {
+      "name": "JB",
+      "email": "email@example.com"
+    }
+  ],
+  "require": {
+    "ext-sodium": "*",
+    "ext-curl": "*",
+    "slim/slim": "*",
+    "slim/psr7": "^1.7",
+    "doctrine/orm": "*",
+    "symfony/cache": "*"
+  },
+  "autoload": {
+    
+    "psr-4": {
+      "App\\": "src"
+    }
+  }
+}
