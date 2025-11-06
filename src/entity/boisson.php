@@ -12,22 +12,23 @@ use Doctrine\ORM\Mapping\ManyToOne;
 #[Table(name: 'boisson')]
 class Boisson
 {
-    #[Id, Column(type: 'integer'), GeneratedValue]//id : nom en bdd de la propriété, type : type de données
-    private int|null $id = null;
+    #[Id, Column(type: 'integer'), GeneratedValue]
+    private ?int $id = null;
 
     #[Column(type: 'string', length: 255)]
-    private string $nom;
+    private string $nom = "";
 
-    #[Column(type: 'integer', length: 255)]
-    private int $volumeCL;
+    #[Column(type: 'integer')]
+    private int $volumeCL = 0;
 
-    #[Column(type: 'float', length: 255)]
-    private float $prix;
+    #[Column(type: 'float')]
+    private float $prix = 0.0;
 
     #[ManyToOne(targetEntity: Categorie::class, inversedBy: 'boissons')]
-    private Categorie $categorie;
+    private ?Categorie $categorie = null;
 
-    public function __construct(string $nom, int $volumeCL, float $prix, Categorie $categorie)
+    // Constructeur unique avec valeurs par défaut
+    public function __construct(string $nom = "", int $volumeCL = 0, float $prix = 0.0, ?Categorie $categorie = null)
     {
         $this->nom = $nom;
         $this->volumeCL = $volumeCL;
@@ -35,39 +36,48 @@ class Boisson
         $this->categorie = $categorie;
     }
 
-    public function getId(): int|null
+    // GETTERS ET SETTERS
+    public function getId(): ?int
     {
         return $this->id;
     }
+
     public function getNom(): string
     {
         return $this->nom;
     }
+
     public function setNom(string $nom): void
     {
         $this->nom = $nom;
     }
+
     public function getVolumeCL(): int
     {
         return $this->volumeCL;
     }
+
     public function setVolumeCL(int $volumeCL): void
     {
         $this->volumeCL = $volumeCL;
     }
+
     public function getPrix(): float
     {
         return $this->prix;
     }
+
     public function setPrix(float $prix): void
     {
         $this->prix = $prix;
     }
-    public function getCategorie(): Categorie
+
+    public function getCategorie(): ?Categorie
     {
         return $this->categorie;
     }
-    public function setCategorie(Categorie $categorie): void
+
+    public function setCategorie(?Categorie $categorie): void
     {
         $this->categorie = $categorie;
     }

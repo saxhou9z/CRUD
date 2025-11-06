@@ -1,30 +1,63 @@
 <?php
 namespace App\Vue;
+
 class Vue_ListeBoisson {
 
-static function donneHTML(array $tableauBoisson, string $msgErreur=""):string
-{
-    $str = "<h1>Liste des boissons</h1>\n";
+    /**
+     * Affiche la liste des boissons avec les boutons Créer / Modifier / Supprimer
+     * @param array $tableauBoisson Liste des objets Boisson
+     * @param string $msgErreur Message d'erreur optionnel
+     * @param \App\Entity\Categorie|null $categorie La catégorie sélectionnée
+     */
+    public static function donneHTML(array $tableauBoisson, $msgErreur = "", $categorie = null): string
+    { 
+        $str = "<h1>Liste des boissons</h1>";
 
-    if ($msgErreur !== "") {
-        $str .= "<p style='color:red'>" . htmlspecialchars($msgErreur, ENT_QUOTES, 'UTF-8') . "</p>\n";
+        // Bouton pour revenir à la sélection des catégories
+        $str .= "<form action='/categorie' method='GET'>
+                    <input type='submit' value='⬅ Retour aux catégories'>
+                 </form><br>";
+
+        // Affichage des messages d'erreur
+        if (!empty($msgErreur)) {
+            $str .= "<p style='color:red;'>$msgErreur</p>";
+        }
+
+        if ($categorie) {
+            $str .= "<h2>Catégorie : " . htmlspecialchars($categorie->getLibelle()) . "</h2>";
+        }
+
+        // Liste des boissons
+        if ($tableauBoisson) {
+            $str .= "<ul>";
+            foreach ($tableauBoisson as $boisson) {
+                $str .= "<li>" . htmlspecialchars($boisson->getNom()) . " (" . $boisson->getVolumeCL() . " cl - " . $boisson->getPrix() . " €) ";
+
+                // Bouton modifier
+                $str .= "<form style='display:inline;' method='GET' action='/boisson/editer/" . $boisson->getId() . "'>
+                            <input type='submit' value='Modifier'>
+                         </form>";
+
+                // Bouton supprimer
+                $str .= "<form style='display:inline;' method='POST' action='/boisson/supprimer' onsubmit='return confirm(\"Supprimer cette boisson ?\")'>
+                            <input type='hidden' name='idBoisson' value='" . $boisson->getId() . "'>
+                            <input type='submit' value='Supprimer'>
+                         </form>";
+
+                $str .= "</li>";
+            }
+            $str .= "</ul>";
+        } else {
+            $str .= "<p>Aucune boisson dans cette catégorie.</p>";
+        }
+
+        // Bouton pour créer une nouvelle boisson dans cette catégorie
+        if ($categorie) {
+            $str .= "<form method='GET' action='/boisson/creation/" . $categorie->getId() . "'>
+                        <input type='submit' value='Créer une nouvelle boisson'>
+                     </form>";
+        }
+
+        return $str;
     }
-
-    $str .= "<table>\n<tr><th>Libellé</th><th>Supprimer</th></tr>\n";
-    foreach($tableauBoisson as $boisson) // The error is here, the Boisson entity does not have a getLibelle() method. It should be getNom()
-    {
-        $str .= "<tr><td><a href='/boisson/editer/".$boisson->getId()."'>".$boisson->getNom()."</a></td>\n"
-            . "<td>\n"
-            . "<form action='/boisson/suppression/".$boisson->getId()."' method='post'>\n"
-            . "<input type='submit' value='Supprimer'>\n"
-            . "</form>\n"
-            . "</td></tr>\n";
-    }
-
-    $str .= "</table>\n"
-        . "Pour créer une nouvelle boisson, cliquez <a href='/boisson/creation'>ici</a>.<br>\n"
-        . "Pour revenir sur la page des catégorie, cliquez <a href='/categorie'>ici</a>.<br>\n";
-
-    return $str;
-}
 }
